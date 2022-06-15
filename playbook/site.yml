@@ -1,12 +1,6 @@
 ---
 - name: Install Clickhouse
   hosts: clickhouse
-  # handlers:
-  #   - name: restart_clickhouse
-  #     become: true
-  #     ansible.builtin.service:
-  #       name: clickhouse-server
-  #       state: restarted
   tasks:
     - block:
       - name: Get clickhouse distrib
@@ -30,7 +24,6 @@
         - clickhouse-common-static-{{ clickhouse_version }}.deb
         - clickhouse-client-{{ clickhouse_version }}.deb
         - clickhouse-server-{{ clickhouse_version }}.deb
-      # notify: restart_clickhouse
     - name: Start clickhouse service
       become: true
       ansible.builtin.service:
@@ -44,12 +37,6 @@
       ignore_errors: true
 - name: Install vector
   hosts: vector
-  # handlers:
-  #   - name: Start clickhouse service
-  #     become: true
-  #     ansible.builtin.service:
-  #       name: clickhouse-server
-  #       state: restarted
   tasks:
     - name: Create vector directory
       become: true
