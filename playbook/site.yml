@@ -35,13 +35,13 @@
       become: true
       ansible.builtin.service:
         name: clickhouse-server
-        state: restarted    
+        state: restarted
     - name: Create database
       ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
       register: create_db
       failed_when: create_db.rc != 0 and create_db.rc !=82
       changed_when: create_db.rc == 0
-      
+      ignore_errors: true
 - name: Install vector
   hosts: vector
   # handlers:
@@ -52,20 +52,25 @@
   #       state: restarted
   tasks:
     - name: Create vector directory
+      become: true
       file:
         path: /vector
         state: directory
+        mode: 0644
     - name: Download archive fiile
+      become: true
       get_url:
         url: "{{ vector_url }}"
         dest: /vector.tar.gz
         mode: '0440'
     - name: Unpack Vector to local directory
+      become: true
       ansible.builtin.unarchive:
         src: /vector.tar.gz
         dest: /vector
-        remote_src: yes    
-
+        extra_opts:
+          - --strip-components=2
+        remote_src: yes
     # - name: Unarchive a file that needs to be downloaded (added in 2.0)
     #   ansible.builtin.unarchive:
     #     src: {{ vector_url }}
