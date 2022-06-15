@@ -34,7 +34,7 @@
       register: create_db
       failed_when: create_db.rc != 0 and create_db.rc !=82
       changed_when: create_db.rc == 0
-      ignore_errors: true
+      # ignore_errors: true
 - name: Install vector
   hosts: vector
   tasks:
